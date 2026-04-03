@@ -1,0 +1,20 @@
+Odpowiedzi do Kroku 5
+
+1 i 2. Zmiana z Konto na KontoPlus i odwrotnie:
+W C# nie da się tak po prostu zmienić typu gotowego obiektu, bo jest on już przypisany w pamięci. Najprostszym sposobem na "zmianę" konta jest po prostu utworzenie nowego obiektu i przepisanie do niego nazwy oraz bilansu ze starego konta.
+
+Na przykład:
+Konto mojeKonto = new Konto("Jan", 100);
+// Przejście na KontoPlus:
+KontoPlus mojeKontoPlus = new KontoPlus(mojeKonto.Nazwa, mojeKonto.Bilans, 500m);
+mojeKonto = mojeKontoPlus;
+
+3. Jak to zrobić lepiej (propozycja modyfikacji):
+Dziedziczenie (Konto -> KontoPlus) jest tu trochę sztywne. Żeby ułatwić takie zmiany w przyszłości, można by zrezygnować z dziedziczenia na rzecz interfejsów (np. IKonto). 
+Innym pomysłem jest posiadanie tylko jednej klasy Konto i dodanie do niej specjalnego pola określającego "tryb" (np. czy ma limit, czy nie). Wtedy zamiast tworzyć nowe obiekty, po prostu zmienialibyśmy tryb działania tego samego obiektu. 
+Można też dopisać w klasach specjalne metody pomocnicze, np. metoda ToKontoPlus(), która sama robiłaby to przepisywanie danych w tle.
+
+4. Scenariusz dla KontoLimit:
+Z klasą KontoLimit sprawa jest o wiele prostsza. Ponieważ zrobiliśmy ją za pomocą delegacji (ma w środku prywatne pole z gotowym obiektem Konto), możemy łatwo przejść na zwykłe konto:
+- Wystarczy dodać do klasy metodę, która po prostu zwraca ten wewnętrzny obiekt (np. public Konto ZrezygnujZLimitu()).
+Dzięki temu niczego nie musimy kopiować, tylko po prostu "wyciągamy" gotowe, zwykłe konto ze środka klasy KontoLimit.
